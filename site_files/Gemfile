@@ -12,6 +12,7 @@ gem 'grit'
 gem 'rails_best_practices', :path => "/Users/regedor/Projects/Gorgeous Code/rails_best_practices"
 
 gem 'delayed_job'
+gem 'formtastic'
 
 
 # Gems used only for assets and not required

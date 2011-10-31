@@ -1,6 +1,10 @@
 <h1>Listing projects</h1>
 
-<%= render 'form' %>
+<%= semantic_form_for "_projects" do |f| %>
+  <%= f.inputs do %>
+    <%= f.input :urls %>
+  <% end -%>
+<% end -%>
 
 <table>
   <tr>
@@ -30,4 +34,4 @@
 
 <br />
 
-<%= link_to 'New Project', new_project_path %>
+<%= link_to 'Download CSV', projects_path({:format => 'csv'}) %>

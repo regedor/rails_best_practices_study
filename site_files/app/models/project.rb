@@ -2,6 +2,8 @@ require 'fileutils'
 
 class Project < ActiveRecord::Base
 
+  after_save { self.send_later(:run!) if self.marked_for_run }
+
 
   #DELETEME
   #  Debug Method 
@@ -26,6 +28,7 @@ class Project < ActiveRecord::Base
   def run!
     self.update_github_information
     self.update_best_practices_report if update_repo! #tenho de por a fazer cenas
+    self.marked_for_run = false
     self.save!
   end
 
@@ -56,6 +59,8 @@ class Project < ActiveRecord::Base
   #
   #  Clones(if it's the first time) and pulls the repository from github to local folder.
   #
+  #  #FIXME deveria retornar true or false consoante houve alterações
+  #
   def update_repo!
     if File.exist? repo_path 
       system "cd '#{repo_path}'; git pull"
@@ -72,6 +77,7 @@ class Project < ActiveRecord::Base
   #
   #  @return [String] repo path
   def repo_path
+    return nil unless self.owner and self.name
     @repo_path ||= File.join(Dir.pwd, "projects", self.owner, self.name)
   end
 
@@ -188,20 +194,21 @@ class Project < ActiveRecord::Base
   # @param [Array] files
   # @return [Array] sorted files
   def file_sort files
+    check  = RailsBestPractices::Core::Check
     models = []
     mailers = []
     files.each do |a|
-      if a =~ Core::Check::MODEL_FILES
+      if a =~ check::MODEL_FILES
         models << a
       end
     end
     files.each do |a|
-      if a =~ Core::Check::MAILER_FILES
+      if a =~ check::MAILER_FILES
         mailers << a
       end
     end
     files.collect! do |a|
-      if a =~ Core::Check::MAILER_FILES || a =~ Core::Check::MODEL_FILES
+      if a =~ check::MAILER_FILES || a =~ check::MODEL_FILES
         #nil
       else
         a
@@ -231,16 +238,48 @@ class Project < ActiveRecord::Base
   def results_csv 
     require 'csv'
     CSV.generate do |csv|
-      csv << (["ProjectName"] + 
-             @runner.results.map { |result| [result[:checker_name], "nr_file"             ]}.flatten)
-      csv << (["ProjectName"] + 
-             @runner.results.map { |result| [result[:error_count], result[:files_checked] ]}.flatten)
+      csv << ((Project.attribute_names.sort - ["nbp_report"]).map { |attr| self.send(attr) } +
+        @runner.results.map { |result| [result[:error_count], result[:files_checked] ]}.flatten
+      )
     end
   end
+
+  def csv_header
+    CSV.generate do |csv|
+      csv << (Project.attribute_names.sort - ["nbp_report"] + @runner.results.map do
+        |result| [result[:checker_name], "Number of files analyzed"]
+      end.flatten)
+    end
+  end
+
+  def self.big_csv
+    csv_header +
+    self.select('nbp_report').map(&:nbp_report).join('\n')
+  end
+
+  #
+  # #FIXME needs a lot of validations
+  #
+  def self.create_from_urls(urls)
+    urls.each do |url|
+      self.create :url => url
+    end
+    return true
+  end
+
 
   def self.big_csv
     self.select('nbp_report').map(&:nbp_report).join '\n'
   end
 
+  #
+  # #FIXME needs a lot of validations
+  #
+  def self.create_from_urls(urls)
+    urls.each do |url|
+      self.create :url => url
+    end
+    return true
+  end
 
 end
