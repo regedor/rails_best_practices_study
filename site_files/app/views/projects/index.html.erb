@@ -1,0 +1,33 @@
+<h1>Listing projects</h1>
+
+<%= render 'form' %>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Owner</th>
+    <th>Watchers</th>
+    <th>Forks</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @projects.each do |project| %>
+  <tr>
+    <td><%= project.name %></td>
+    <td><%= project.owner %></td>
+    <td><%= project.watchers %></td>
+    <td><%= project.forks %></td>
+    <td><%= link_to 'Show', project %></td>
+    <td><%= link_to 'GitHub', project.url %></td>
+    <td><%= link_to 'Edit', project, method: :put %></td>
+    <td><%= link_to 'Destroy', project, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Project', new_project_path %>

@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  owner: MyString
+  name: MyString
+  github_url: MyString
+  watchers: 1
+  forks: 1
+  nbp_report: MyText
+
+two:
+  owner: MyString
+  name: MyString
+  github_url: MyString
+  watchers: 1
+  forks: 1
+  nbp_report: MyText
