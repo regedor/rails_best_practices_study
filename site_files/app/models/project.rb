@@ -4,20 +4,16 @@ class Project < ActiveRecord::Base
 
   after_save { self.send_later(:run!) if self.marked_for_run }
 
-
-  #DELETEME
-  #  Debug Method 
-  #
-  def set_url
-    self.url ="https://github.com/regedor/Utils-menu"
-  end
+  #def results
+  #  @results ||= JSON.parse(self.nbp_report)
+  #end
 
 
   #
   #  redefining destroy: deletes local repo associated with the project
   #
   def destroy
-    system "rm -rf '#{self.repo_path}'"
+    #system "rm -rf '#{self.repo_path}'"
     super
   end
 
@@ -91,134 +87,58 @@ class Project < ActiveRecord::Base
     self.owner = url[-2]
   end
 
-  #####RAILS BEST PRACTICES
+  # FIXME this should be a class that returns the csv header
+  #def csv_header
+  #  CSV.generate do |csv|
+  #    csv << (Project.attribute_names.sort - ["nbp_report"] + @runner.results.map do
+  #      |result| [result[:checker_name], "Number of files analyzed"]
+  #    end.flatten)
+  #  end
+  #end
 
+
+  #
+  #  Renders a big csv containing projects information
+  #
+  def self.big_csv
+    self.first.nbp_report.split("\n").first + "\n" +
+    self.select('nbp_report').find_all do |p|
+      !p.nbp_report.blank?
+    end.map{|p|p.nbp_report.split("\n").last}.join("\n")
+  end
+
+
+  #
+  # #FIXME needs a lot of validations
+  #
+  def self.create_from_urls(urls)
+    urls.each do |url|
+      self.create :url => url
+    end
+    return true
+  end
+
+
+##################################
+#####  RAILS BEST PRACTICES  #####
+##################################
+include RailsBestPractices
 
   #
   #  Runs best practices
   #
   def update_best_practices_report
-    #require File.join(Dir.pwd, 'vendor/plugins/rails_best_practices/lib/rails_best_practices/lexicals'  )
-    #require File.join(Dir.pwd, 'vendor/plugins/rails_best_practices/lib/rails_best_practices/prepares'  )
-    #require File.join(Dir.pwd, 'vendor/plugins/rails_best_practices/lib/rails_best_practices/reviews'   )
-    #require File.join(Dir.pwd, 'vendor/plugins/rails_best_practices/lib/rails_best_practices/core'      )
-    #require File.join(Dir.pwd, 'vendor/plugins/rails_best_practices/lib/fileutils'                      )
     @options = {}
     @path    = repo_path
 
-    RailsBestPractices::Core::Runner.base_path = @path
-    @runner = RailsBestPractices::Core::Runner.new
+    Core::Runner.base_path = @path
+    @runner = Core::Runner.new
 
     ["lexical", "prepare", "review"].each { |process| send(:process, process) }
     @runner.on_complete
     
+    #self.nbp_report = json_results
     self.nbp_report = results_csv
-  end
-
-
-  # process lexical, prepare or reivew.
-  #
-  # get all files for the process, analyze each file,
-  # and increment progress bar unless debug.
-  #
-  # @param [String] process the process name, lexical, prepare or review.
-  def process(process)
-    files = send("#{process}_files")
-    files.each do |file|
-      #debugger
-      @runner.send("#{process}_file", file)
-    end
-  end
-
-
-  # get all files for prepare process.
-  #
-  # @return [Array] all files for prepare process
-  def prepare_files
-    @prepare_files ||= begin
-      ['app/models', 'app/mailers', 'db/schema.rb', 'app/controllers'].inject([]) { |files, name|
-        files += expand_dirs_to_files(File.join(@path, name))
-      }.compact
-    end
-  end
-
-
-  # get all files for review process.
-  #
-  # @return [Array] all files for review process
-  def review_files
-    @review_files ||= begin
-      files = expand_dirs_to_files(@path)
-      files = file_sort(files)
- 
-      # By default, tmp, vender, spec, test, features are ignored.
-      ['vendor', 'spec', 'test', 'features', 'tmp'].each do |pattern|
-        files = file_ignore(files, "#{pattern}/") unless @options[pattern]
-      end
- 
-      # Exclude files based on exclude regexes if the option is set.
-      # @options[:exclude].each do |pattern|
-      #   files = file_ignore(files, pattern)
-      # end
- 
-      files.compact
-    end
-  end
-
-
-  alias :lexical_files :review_files
-
-
-  # expand all files with extenstion rb, erb, haml and builder under the dirs
-  #
-  # @param [Array] dirs what directories to expand
-  # @return [Array] all files expanded
-  def expand_dirs_to_files *dirs
-    extensions = ['rb', 'erb', 'rake', 'rhtml', 'haml', 'builder']
- 
-    dirs.flatten.map { |entry|
-      next unless File.exist? entry
-      if File.directory? entry
-        Dir[File.join(entry, '**', "*.{#{extensions.join(',')}}")]
-      else
-        entry
-      end
-    }.flatten
-  end
-
-
-  # sort files, models first, then mailers, and sort other files by characters.
-  #
-  # models and mailers first as for prepare process.
-  #
-  # @param [Array] files
-  # @return [Array] sorted files
-  def file_sort files
-    check  = RailsBestPractices::Core::Check
-    models = []
-    mailers = []
-    files.each do |a|
-      if a =~ check::MODEL_FILES
-        models << a
-      end
-    end
-    files.each do |a|
-      if a =~ check::MAILER_FILES
-        mailers << a
-      end
-    end
-    files.collect! do |a|
-      if a =~ check::MAILER_FILES || a =~ check::MODEL_FILES
-        #nil
-      else
-        a
-      end
-    end
-    files.compact!
-    models.sort
-    mailers.sort
-    files.sort
-    return models + mailers + files
   end
 
 
@@ -233,53 +153,29 @@ class Project < ActiveRecord::Base
  
 
   #
-  # output results with csv format.
+  # output results in json format.
+  #
+  def json_results
+    @runner.results.map do |result|
+      result[:error_ratio] = result[:error_count].to_f/(result[:files_checked]+1)
+      result
+    end.to_json
+  end
+
+
+  #
+  # output results in csv format.
   #
   def results_csv 
     require 'csv'
     CSV.generate do |csv|
+      csv << (Project.attribute_names.sort - ["nbp_report"] + @runner.results.map do
+        |result| [result[:checker_name], "Number of files analyzed"]
+      end.flatten)
       csv << ((Project.attribute_names.sort - ["nbp_report"]).map { |attr| self.send(attr) } +
         @runner.results.map { |result| [result[:error_count], result[:files_checked] ]}.flatten
       )
     end
-  end
-
-  def csv_header
-    CSV.generate do |csv|
-      csv << (Project.attribute_names.sort - ["nbp_report"] + @runner.results.map do
-        |result| [result[:checker_name], "Number of files analyzed"]
-      end.flatten)
-    end
-  end
-
-  def self.big_csv
-    csv_header +
-    self.select('nbp_report').map(&:nbp_report).join('\n')
-  end
-
-  #
-  # #FIXME needs a lot of validations
-  #
-  def self.create_from_urls(urls)
-    urls.each do |url|
-      self.create :url => url
-    end
-    return true
-  end
-
-
-  def self.big_csv
-    self.select('nbp_report').map(&:nbp_report).join '\n'
-  end
-
-  #
-  # #FIXME needs a lot of validations
-  #
-  def self.create_from_urls(urls)
-    urls.each do |url|
-      self.create :url => url
-    end
-    return true
   end
 
 end
