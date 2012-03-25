@@ -1,5 +1,4 @@
 SiteFiles::Application.routes.draw do
-  root :to => "projects#index"
-  resources :projects
+  root :to => redirect("/projects")
   resources :projects
 end

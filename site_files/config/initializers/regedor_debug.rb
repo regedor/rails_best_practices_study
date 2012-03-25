@@ -1,33 +1,56 @@
 if Rails.env == "development"
-    
+
+
+  # Lists options
   def list
-    puts " r   - reload and makes new project (doesn not save) "
-    puts " pr! - run all and save the nproject                 "
-    puts " c   - counts projects saved                         "
-    puts " d!  - Deletes all Projects                          "
-    puts " b   - Show the nproject rbp_report                  "
+    IO.read(__FILE__).scan(/#(.*)\n *def (.*)\n/).each do |m|
+      puts m.last + " " * ( 10 - m.last.size ) + " - " + m.first
+    end
     nil
   end
   
-  def r
+
+  # reload and makes new @p (project.new :url..)
+  def rp
     reload!
     @p = Project.new :url => "https://github.com/regedor/Utils-menu"
-    @p.update_owner_and_name
   end
   
+
+  # Run all and save to db (@p.run!) 
   def pr!
     @p.run!
   end
+
+  # Prints  @p.rbp_report  
+  def report
+    @p.nbp_report
+  end
+
+  # Reloads console (reload!)
+  def r
+    reload!
+  end
   
+  # Counts projects saved (Project.count)
   def c
     Project.count
   end
   
-  def d!
+  # Deletes all Projects          
+  def destroy!
     Project.all.map &:destroy
   end
   
-  def b
-    @p.nbp_report
+  # Try to run! again
+  def try_again!
+    Project.find_all_by_forks(nil).each do |a|
+      begin 
+        a.run!
+      rescue 
+        puts "ERROR HERE! #{a.url}"
+      end
+    end
   end
+
 end

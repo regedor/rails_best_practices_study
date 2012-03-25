@@ -10,6 +10,7 @@ gem 'hubruby'
 gem 'grit'
 
 gem 'rails_best_practices', :path => "/Users/regedor/Projects/Gorgeous Code/rails_best_practices"
+gem 'haml'
 
 gem 'delayed_job'
 gem 'formtastic'

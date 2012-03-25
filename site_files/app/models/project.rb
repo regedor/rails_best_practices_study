@@ -2,6 +2,8 @@ require 'fileutils'
 
 class Project < ActiveRecord::Base
 
+  validates :url, uniqueness: true
+
   after_save { self.send_later(:run!) if self.marked_for_run }
 
   #def results
@@ -122,7 +124,7 @@ class Project < ActiveRecord::Base
 ##################################
 #####  RAILS BEST PRACTICES  #####
 ##################################
-include RailsBestPractices
+  include RailsBestPractices
 
   #
   #  Runs best practices
@@ -147,7 +149,7 @@ include RailsBestPractices
   # @param [Array] files
   # @param [Regexp] pattern files match the pattern will be ignored
   # @return [Array] files that not match the pattern
-  def file_ignore files, pattern
+  def self.file_ignore files, pattern
     files.reject { |file| file.index(pattern) }
   end
  
@@ -177,5 +179,122 @@ include RailsBestPractices
       )
     end
   end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # process lexical, prepare or reivew.
+    #
+    # get all files for the process, analyze each file.
+    #
+    # @param [String] process the process name, lexical, prepare or review.
+    def process(process)
+      files = send("#{process}_files")
+      files.each do |file|
+        @runner.send("#{process}_file", file)
+      end
+    end
+
+    # get all files for prepare process.
+    #
+    # @return [Array] all files for prepare process
+    def prepare_files
+      @prepare_files ||= begin
+        ['app/models', 'app/mailers', 'db/schema.rb', 'app/controllers'].inject([]) { |files, name|
+          files += expand_dirs_to_files(File.join(@path, name))
+        }.compact
+      end
+    end
+
+    # get all files for review process.
+    #
+    # @return [Array] all files for review process
+    def review_files
+      @review_files ||= begin
+        files = expand_dirs_to_files(@path)
+        files = file_sort(files)
+
+        # By default, tmp, vender, spec, test, features are ignored.
+        ['vendor', 'spec', 'test', 'features', 'tmp'].each do |pattern|
+          files = file_ignore(files, "#{pattern}/") unless @options[pattern]
+        end
+
+        files.compact
+      end
+    end
+
+    alias :lexical_files :review_files
+
+    # expand all files with extenstion rb, erb, haml and builder under the dirs
+    #
+    # @param [Array] dirs what directories to expand
+    # @return [Array] all files expanded
+    def expand_dirs_to_files *dirs
+      extensions = ['rb', 'erb', 'rake', 'rhtml', 'haml', 'builder']
+
+      dirs.flatten.map { |entry|
+        next unless File.exist? entry
+        if File.directory? entry
+          Dir[File.join(entry, '**', "*.{#{extensions.join(',')}}")]
+        else
+          entry
+        end
+      }.flatten
+    end
+
+
+    # sort files, models first, then mailers, and sort other files by characters.
+    #
+    # models and mailers first as for prepare process.
+    #
+    # @param [Array] files
+    # @return [Array] sorted files
+    def file_sort files
+      models = []
+      mailers = []
+      files.each do |a|
+        if a =~ Core::Check::MODEL_FILES
+          models << a
+        end
+      end
+      files.each do |a|
+        if a =~ Core::Check::MAILER_FILES
+          mailers << a
+        end
+      end
+      files.collect! do |a|
+        if a =~ Core::Check::MAILER_FILES || a =~ Core::Check::MODEL_FILES
+          #nil
+        else
+          a
+        end
+      end
+      files.compact!
+      models.sort
+      mailers.sort
+      files.sort
+      return models + mailers + files
+    end
+
+    # ignore specific files.
+    #
+    # @param [Array] files
+    # @param [Regexp] pattern files match the pattern will be ignored
+    # @return [Array] files that not match the pattern
+    def file_ignore files, pattern
+      files.reject { |file| file.index(pattern) }
+    end
+
+
 
 end
