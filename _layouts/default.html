@@ -2,39 +2,16 @@
 <html>
 <head>
   <meta charset='utf-8'>
-
   <title>regedor/rails_best_practices_study @ GitHub</title>
-
-  <style type="text/css">
-    body {
-      margin-top: 1.0em;
-      background-color: #27511f;
-      font-family: Helvetica, Arial, FreeSans, san-serif;
-      color: #ffffff;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-    h1 { font-size: 3.8em; color: #d8aee0; margin-bottom: 3px; }
-    h1 .small { font-size: 0.4em; }
-    h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #d8aee0; }
-    h3 { text-align: center; color: #d8aee0; }
-    a { color: #d8aee0; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-    pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-  </style>
+  <link rel="stylesheet" href="/css/reset.css" type="text/css" />
+  <link rel="stylesheet" href="/css/default.css" type="text/css" media="screen, projection"/>
+  <link rel="stylesheet" href="/css/highlight.css" type="text/css" media="screen, projection"/>
 </head>
 
 <body>
-  <a href="https://github.com/regedor/rails_best_practices_study"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
-
+  <a href="https://github.com/regedor/rails_best_practices_study"><img style="position: absolute; top: 0; right: 0; border: 0;"
+     src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
   <div id="container">
-
     <div class="download">
       <a href="https://github.com/regedor/rails_best_practices_study/zipball/master">
         <img border="0" width="90" src="https://github.com/images/modules/download/zip.png"></a>
@@ -42,19 +19,16 @@
         <img border="0" width="90" src="https://github.com/images/modules/download/tar.png"></a>
     </div>
 
-    <h1><a href="https://github.com/regedor/rails_best_practices_study">rails best practices study</a>
-      <span class="small">by <a href="https://github.com/regedor">regedor</a></span></h1>
+    <h1><a href="https://github.com/regedor/rails_best_practices_study">Rails Best Practices Study</a>
+      <span class="small">by <a href="https://www.regedor.com">Miguel Regedor</a></span></h1>
+    <div class="description">By following best practices the project maintainability is increased.</div>
 
-    <div class="description">
-      By following best practices the project maintainability is increased.
-    </div>
-
-    {% if page.title%}
+    {% if page.title %}
       <h1>{{ page.title }}</h1>
       {{ content }}
       <div class="disqus" id="disqus_thread"></div>
       <script type="text/javascript">
-        var disqus_shortname = 'regedorwritings';
+        var disqus_shortname = 'studygorgeouscode';
         (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
           dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
@@ -63,13 +37,12 @@
       </script>
     {% else %}
       {{ content }}
-    {% end %}
-
+    {% endif %}
 
     <div class="footer">
-      get the source code on GitHub : <a href="https://github.com/regedor/rails_best_practices_study">regedor/rails_best_practices_study</a>
+      get the source code on GitHub:
+      <a href="https://github.com/regedor/rails_best_practices_study">regedor/rails_best_practices_study</a>
     </div>
-
   </div>
 
 <script type="text/javascript">
