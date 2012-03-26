@@ -28,3 +28,5 @@ I would also appreciate if you would write, in the same comment, if consider the
 </li></ul>
 
 Thanks in advance for your contribution ;)
+
+<i style="text-align:right">Miguel Regedor</i>

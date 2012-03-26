@@ -1,20 +1,20 @@
 HTML BODY { margin-top: 1.0em; font-family: Helvetica, Arial, FreeSans, san-serif; background: url("/images/bg.png"); color: #121212;}
 #container             { margin: 0 auto; width: 700px; }
-#about-soucecode       { margin: 0 auto; width: 650px; }
 h1                     { font-size: 3.3em; color: #232; margin-bottom: 3px; }
 h1 .small              { font-size: 0.4em; }
 h1 a                   { text-decoration: none }
 h2                     { font-size: 1.5em; color: #396b08; }
-h3                     { text-align: center; color: #396b08; }
+h3                     { text-align: center; color: #595; background-color:rgba(0,0,0,0.75); }
 a                      { color: #232; }
+a:hover                { color: #464; }
 .description           { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic; color:396b08;}
 .download              { float: right; }
 .footer                { text-align:center; padding-top:30px; font-style: italic; }
                        
 pre                    { background: #000; color: #fff; padding: 15px;}
 hr                     { border: 0; width: 80%; border-bottom: 1px solid #aaa}                
-li                     { font-size: 1em; }
-li .a                  { text-decoration:none;}              
+li                     { font-size: 1em; margin-bottom:0.4em;}
+li a                   { text-decoration:none; font-weight:bold;}              
 .post-date             { font-size: .7em;   color: #345034;}
 .back-to-project       { margin-bottom:-5px; margin-left:5px;}
 .first.back-to-project { padding-top:29px;}
@@ -37,7 +37,7 @@ li .a                  { text-decoration:none;}
    box-shadow: rgba(0,0,0,1) 0 1px 0;
    text-shadow: rgba(0,0,0,.4) 0 1px 0;
    color: #402f4f;
-   font-size: 11px;
+   font-size: 12px;
    font-family: Helvetica, Arial, Sans-Serif;
    text-decoration: none;
    vertical-align: middle;
