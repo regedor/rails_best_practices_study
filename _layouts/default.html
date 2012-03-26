@@ -3,7 +3,6 @@
 <head>
   <meta charset='utf-8'>
   <title>regedor/rails_best_practices_study @ GitHub</title>
-  <link rel="stylesheet" href="/css/reset.css" type="text/css" />
   <link rel="stylesheet" href="/css/default.css" type="text/css" media="screen, projection"/>
   <link rel="stylesheet" href="/css/highlight.css" type="text/css" media="screen, projection"/>
 </head>
@@ -12,29 +11,23 @@
   <a href="https://github.com/regedor/rails_best_practices_study"><img style="position: absolute; top: 0; right: 0; border: 0;"
      src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
   <div id="container">
-    <div class="download">
-      <a href="https://github.com/regedor/rails_best_practices_study/zipball/master">
-        <img border="0" width="90" src="https://github.com/images/modules/download/zip.png"></a>
-      <a href="https://github.com/regedor/rails_best_practices_study/tarball/master">
-        <img border="0" width="90" src="https://github.com/images/modules/download/tar.png"></a>
-    </div>
-
-    <h1><a href="https://github.com/regedor/rails_best_practices_study">Rails Best Practices Study</a>
-      <span class="small">by <a href="https://www.regedor.com">Miguel Regedor</a></span></h1>
-    <div class="description">By following best practices the project maintainability is increased.</div>
-
+	
     {% if page.title %}
+    <small><a href="/"class="back-to-project">go to project page</a></small>
       <h1>{{ page.title }}</h1>
       {{ content }}
-      <div class="disqus" id="disqus_thread"></div>
-      <script type="text/javascript">
-        var disqus_shortname = 'studygorgeouscode';
-        (function() {
-          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-         })();
-      </script>
+      {% if page.disqus %}
+        <div class="disqus" id="disqus_thread"></div>
+        <script type="text/javascript">
+          var disqus_shortname = 'studygorgeouscode';
+          (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+           })();
+        </script>
+      {% endif %}
+      <small><a href="/"class="back-to-project">go to project page</a></small>
     {% else %}
       {{ content }}
     {% endif %}

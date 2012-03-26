@@ -2,48 +2,71 @@
 layout: default
 ---
 
-<p> 
-  It might seam a obvious assumption. Although like with everything else it has to be proven.
-  The objective of this project is to prove that a correlation exists,
-  between the project quality and the best practices it follows.
-</p>
-    
-<h2> Latest News<h2>
-  {% for post in site.posts %}
-    <li>
-      <a href="{{ post.url }}">{{ post.title }}</a>
-      <span class="post-date">{{ post.date | date_to_long_string }}</span>
-    </li>
-  {% endfor %}
-    
-<h2>Dependencies</h2>
-<p>https://github.com/railsbp/rails_best_practices</p>
+<div class="download">
+  <a href="https://github.com/regedor/rails_best_practices_study/zipball/master">
+    <img border="0" width="90" src="https://github.com/images/modules/download/zip.png"></a>
+  <a href="https://github.com/regedor/rails_best_practices_study/tarball/master">
+    <img border="0" width="90" src="https://github.com/images/modules/download/tar.png"></a>
+</div>
 
-<h2>License</h2>
-<p>Copyright (c) 2012 Miguel Regedor</p>
-<p>
-  Permission is hereby granted, free of charge, to any person obtaining
-  a copy of this software and associated documentation files (the
-  "Software"), to deal in the Software without restriction, including
-  without limitation the rights to use, copy, modify, merge, publish,
-  distribute, sublicense, and/or sell copies of the Software, and to
-  permit persons to whom the Software is furnished to do so, subject to
-  the following conditions:
-</p><p>
-  The above copyright notice and this permission notice shall be
-  included in all copies or substantial portions of the Software.
-</p><p>
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-  LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+<h1><a href="https://github.com/regedor/rails_best_practices_study">Rails Best Practices Study</a>
+  <span class="small">by <a href="https://github.com/regedor">Miguel Regedor</a></span></h1>
+<div class="description">by following best practices, projects maintainability is increased.</div>
+
+<p> 
+  It seams an obvious assumption. Although, it requires a formal proof.<br />
+  The objective of this project is to find a correlation,
+  between projects quality and best practices followed.<br />
+  This study was the support for <a href="https://github.com/regedor/Master-Thesis">my master thesis</a>.
 </p>
+    
+<h2> Writings</h2>
+<ul>
+{% for post in site.posts %}
+  <li>
+    <a href="{{ post.url }}">{{ post.title }}</a>
+    <span class="post-date">{{ post.date | date_to_long_string }}</span>
+  </li>
+{% endfor %}
+</ul>
+
+
+
+<h2>Summary</h2>
+<p>https://github.com/railsbp/rails_best_practices</p>
+ 
+<h2>About source code in this project</h2>
+<div id="about-soucecode">
+  <h3>Dependencies</h2>
+  <p>https://github.com/railsbp/rails_best_practices</p>
+  
+  <h3>License</h2>
+  <p>Copyright (c) 2012 Miguel Regedor</p>
+  <p>
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    "Software"), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+  </p><p>
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+  </p><p>
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  </p>
+</div>
+
     
 <h2>Author</h2>
-<p>Miguel Regedor (miguelregedor@gmail.com)</p>
+<p><a href="https://www.regedor.com">Miguel Regedor</a> (miguelregedor@gmail.com)</p>
     
 <h2>Download</h2>
 <p>
