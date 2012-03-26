@@ -29,4 +29,4 @@ I would also appreciate if you would write, in the same comment, if consider the
 
 Thanks in advance for your contribution ;)
 
-<i style="text-align:right">Miguel Regedor</i>
+<p class="post-author">Miguel Regedor</p>
