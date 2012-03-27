@@ -15,28 +15,29 @@ hr            { border: 0; width: 80%; border-bottom: 1px solid #aaa}
 
 
 /* Details */                                                                                                                          
-h1 .small               { font-size: 0.4em; }
-h1 a                    { text-decoration: none }         
-.post-date              { font-size: .7em;   color: #345034;}
-.back-to-project        { margin-bottom:-5px; margin-left:10px;}
-.first.back-to-project  { padding-top:29px;}                     
-li                      { font-size: 1em; margin-bottom:0.4em;}
-li a                    { text-decoration:none; font-weight:bold;}
-ul.bullet-a li          { list-style-image: url('/images/bullet-image-a.png'); }
-iframe #gview #view     { background-color: #000;}
-.post-author            { text-align: right; font-style:italic;}
+h1 .small                    { font-size: 0.4em; }
+h1 a                         { text-decoration: none }         
+.post-date                   { font-size: .7em;   color: #345034;}
+.back-to-project             { margin-bottom:-5px; margin-left:10px;}
+.first.back-to-project       { padding-top:29px;}                     
+.reg-content li              { font-size: 1em; margin-bottom:0.4em;}
+.reg-content li a            { text-decoration:none; font-weight:bold;}
+.reg-content  ul.bullet-a li { list-style-image: url('/images/bullet-image-a.png'); }
+iframe #gview #view          { background-color: #000;}
+.post-author                 { text-align: right; font-style:italic;}
 
 
 /* for gradient buttons (use: just add the class button) */                                                                                                                          
-ul, ol { margin:auto -3em 1em 0; padding:0; position:relative; left:-3em; overflow:hidden; }
-li     { margin-top:0.25em; margin-bottom:0.25em; }
-ul ul  { margin-left:1em; padding-left:0; }
-ul ol  { margin-left:1em; padding-left:0; }
-ol ol  { margin-left:1em; padding-left:0; }
-ol ul  { margin-left:1em; padding-left:0; }
-ul li  { margin-left:5em; }
-ol li  { margin-left:5em; }
-li li  { margin-left:1em; }
+.reg-content ul, ol { margin:auto -3em 1em 0; padding:0; position:relative; left:-3em; overflow:hidden; }
+.reg-content li     { margin-top:0.25em; margin-bottom:0.25em; }
+.reg-content ul ul  { margin-left:1em; padding-left:0; }
+.reg-content ul ol  { margin-left:1em; padding-left:0; }
+.reg-content ol ol  { margin-left:1em; padding-left:0; }
+.reg-content ol ul  { margin-left:1em; padding-left:0; }
+.reg-content ul li  { margin-left:5em; }
+.reg-content ol li  { margin-left:5em; }
+.reg-content li li  { margin-left:1em; }
+
 
 
 /* for gradient buttons (use: just add the class button) */                                                                                                                          
