@@ -15,7 +15,7 @@
     {% if page.title %}
       <a href="/"class="first button back-to-project">go to project page</a>
       <h1>{{ page.title }}</h1>
-      {{ content }}
+      <div class="reg-content">{{ content }}</div>
       {% if page.disqus %}
         <div class="disqus" id="disqus_thread"></div>
         <script type="text/javascript">
@@ -29,7 +29,7 @@
       {% endif %}
       <a href="/"class="button back-to-project">go to project page</a>
     {% else %}
-      {{ content }}
+      <div class="reg-content">{{ content }}</div>
     {% endif %}
 
     <div class="footer">
