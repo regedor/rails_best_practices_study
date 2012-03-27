@@ -4,7 +4,7 @@ title: Call for Help
 disqus: true
 ---
 
-Hi everyone, in the present moment I need a lot of Ruby on Rails applications, 
+Hi everyone, in the present moment, I need a lot of Ruby on Rails applications, 
 so that I can use my altered version of the [Richard Huang](https://github.com/flyerhzm) gem: 
 [rails_best_practices](https://github.com/regedor/rails_best_practices)
 to prove the importance of best practices. 
