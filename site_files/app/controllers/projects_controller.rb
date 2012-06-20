@@ -6,7 +6,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       format.html do
         @project = Project.new
-        @projects = Project.select("id, name, forks, watchers, owner, url")
+        @projects = Project.select("id, name, forks, watchers, owner, url, score").order("score DESC")
       end
       format.json do
         @projects = Project.all
@@ -46,6 +46,10 @@ class ProjectsController < ApplicationController
         format.json { render json: @project.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def edit
+    @project = Project.find(params[:id])
   end
 
   # PUT /projects/1

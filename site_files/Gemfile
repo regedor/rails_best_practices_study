@@ -12,7 +12,7 @@ gem 'grit'
 gem 'rails_best_practices', :path => "/Users/regedor/Projects/Gorgeous Code/rails_best_practices"
 gem 'haml'
 
-gem 'delayed_job'
+gem 'delayed_job', "= 2.1.4"
 gem 'formtastic'
 
 
@@ -42,3 +42,5 @@ group :test do
   # Pretty printed test output
   gem 'turn', :require => false
 end
+
+gem "twitter-bootstrap-rails"

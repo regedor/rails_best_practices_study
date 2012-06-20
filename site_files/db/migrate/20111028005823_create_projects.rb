@@ -5,6 +5,10 @@ class CreateProjects < ActiveRecord::Migration
       t.string    :url
       t.string    :owner 
       t.string    :name 
+      
+      t.integer    :ros_voters
+      t.integer    :ros_score
+      t.integer    :ros_favorites
 
       # Github fields
       t.integer   :forks 

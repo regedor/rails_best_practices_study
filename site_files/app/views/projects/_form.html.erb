@@ -1,4 +1,5 @@
-<%= form_for(@project) do |f| %>
+<%= form_for(@project, {html:{class: "well"}}) do |f| %>
+
   <% if @project.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@project.errors.count, "error") %> prohibited this project from being saved:</h2>
@@ -11,12 +12,15 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :url %><br />
-    <%= f.text_field :url %>
-  </div>
+  <%= f.label :url, "GitHub URL" %>
+  <%= f.text_field :url %>
+  <span class="help-block">Should be the url to rails project in GitHub.</span>
   
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+  <label class="checkbox">
+    <%= f.check_box :marked_for_run, class: "checkbox" %>Update Repository and Generate New Report
+  </label>
+
+  <%= f.submit class: "btn btn-primary" %>
+  <%= link_to '<i class="icon-arrow-left"></i> Go Back'.html_safe, @project, class: "btn"%> 
+
 <% end %>

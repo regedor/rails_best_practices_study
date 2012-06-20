@@ -4,7 +4,7 @@ class Project < ActiveRecord::Base
 
   validates :url, uniqueness: true
 
-  after_save { self.send_later(:run!) if self.marked_for_run }
+  after_save { self.delay.run! if self.marked_for_run }
 
   #def results
   #  @results ||= JSON.parse(self.nbp_report)
@@ -61,7 +61,8 @@ class Project < ActiveRecord::Base
   #
   def update_repo!
     if File.exist? repo_path 
-      system "cd '#{repo_path}'; git pull"
+      #system "cd '#{repo_path}'; git pull"
+      return true
     else
       FileUtils.mkdir_p(File.dirname repo_path)
       system "git clone '#{self.url}' '#{repo_path}'"
@@ -84,7 +85,7 @@ class Project < ActiveRecord::Base
   #  Updates project owner and name based on the URL
   #
   def update_owner_and_name
-    url   = self.url.split "/"
+    url = self.url.gsub(" ","").split "/"
     self.name  = url[-1]
     self.owner = url[-2]
   end
@@ -114,10 +115,24 @@ class Project < ActiveRecord::Base
   # #FIXME needs a lot of validations
   #
   def self.create_from_urls(urls)
-    urls.each do |url|
-      self.create :url => url
-    end
+    urls.each { |url| self.create :url => url }
     return true
+  end
+
+  def nbp_report_headers_array
+    begin ; self.nbp_report.split("\n").first.split(",") ; rescue ; [] ; end
+  end
+
+  def nbp_report_values_array
+    begin ; self.nbp_report.split("\n").last.split(",") ; rescue ; [] ; end
+  end
+
+  def nbp_report_to_hash
+    headers = self.nbp_report_headers_array
+    values  = self.nbp_report_values_array
+    hash    = {}
+    headers.size.times { |i| hash[headers[i]] = values[i] }
+    return(@nbp_report_to_hash ||= hash)
   end
 
 
@@ -137,11 +152,54 @@ class Project < ActiveRecord::Base
     @runner = Core::Runner.new
 
     ["lexical", "prepare", "review"].each { |process| send(:process, process) }
-    @runner.on_complete
+    #@runner.on_complete
+    @runner.after_review
     
     #self.nbp_report = json_results
     self.nbp_report = results_csv
+    self.nbp_report = add_more_logic_to_nbp_report
+    self.score      = self.nbp_report_to_hash["rbp_score"]
   end
+
+
+  def add_more_logic_to_nbp_report
+    headers     = nbp_report_headers_array
+    values      = nbp_report_values_array
+    new_values  = []
+    new_headers = []
+    metric      = 0
+    nbps        = 0
+    total_files = 0 
+    headers.each_with_index do |header,i|
+      if header == "Number of files analyzed" 
+        new_headers << header.gsub(" ","_").downcase.underscore
+        new_headers << ("m#{metric+=1}_"+headers[i-1].gsub(" ","_").underscore)
+
+        new_values  << values[i]
+        new_values  << ((values[i-1].to_i+0.000000001)/(values[i].to_i+0.0000001)*1000).to_i.to_s
+
+        total_files += values[i].to_i
+        nbps        += new_values.last.to_i
+      else
+        new_headers << header.gsub(" ","_").underscore
+        new_values  << values[i]
+      end
+    end
+
+    new_headers << "total_files_analyzed"
+    new_values  << total_files
+    new_headers << "nbps"
+    new_values  << nbps
+    new_headers << "rbp_score"
+    new_values  << (5-((nbps-200)*0.001)).round
+    require 'csv'
+    CSV.generate do |csv|
+      csv << new_headers
+      csv << new_values
+    end
+  end
+
+
 
 
   # ignore specific files.
@@ -174,7 +232,7 @@ class Project < ActiveRecord::Base
       csv << (Project.attribute_names.sort - ["nbp_report"] + @runner.results.map do
         |result| [result[:checker_name], "Number of files analyzed"]
       end.flatten)
-      csv << ((Project.attribute_names.sort - ["nbp_report"]).map { |attr| self.send(attr) } +
+      csv << ((Project.attribute_names.sort - ["nbp_report"]).map { |attr| self.send(attr).to_s.gsub(",",";") } +
         @runner.results.map { |result| [result[:error_count], result[:files_checked] ]}.flatten
       )
     end

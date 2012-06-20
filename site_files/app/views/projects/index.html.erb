@@ -1,17 +1,22 @@
-<h1>Listing projects</h1>
-
-<%= semantic_form_for "_projects", url: '/projects' do |f| %>
-  <%= f.inputs do %>
-    <%= f.input :urls %>
+<%if is_admin? %>
+  <h2>Add Projects</h2>
+  
+  <%= semantic_form_for "_projects", url: '/projects' do |f| %>
+    <%= f.inputs do %>
+      <%= f.input :urls %>
+    <% end -%>
   <% end -%>
-<% end -%>
+<%end%>
 
-<table>
+<h2>Analyzed Rails Projects</h2>
+
+<table class="table">
   <tr>
-    <th>Name</th>
+    <th>Project Name</th>
     <th>Owner</th>
     <th>Watchers</th>
     <th>Forks</th>
+    <th>RBP Score</th>
     <th></th>
     <th></th>
     <th></th>
@@ -19,19 +24,20 @@
   </tr>
 
 <% @projects.each do |project| %>
-  <tr>
+  <tr id="project-<%=project.id.to_s%>">
     <td><%= project.name %></td>
     <td><%= project.owner %></td>
     <td><%= project.watchers %></td>
     <td><%= project.forks %></td>
-    <td><%= link_to 'Show', project %></td>
-    <td><%= link_to 'GitHub', project.url %></td>
-    <td><%= link_to 'Edit', project, method: :put %></td>
-    <td><%= link_to 'Destroy', project, confirm: 'Are you sure?', method: :delete %></td>
+    <td><span class="badge badge-<%=(project.score.to_i > 3 ? "success" : (project.score.to_i > 1 ? "warning" : "important"))%>">
+      <%= project.score.to_i if project.score %>
+    </span></td>
+    <td><%= link_to '<i class="icon-list-alt"></i> Report'.html_safe, project, class: "btn #{'btn-info' if project.score}" %></td>
+    <td><%= link_to '<i class="icon-eye-open"></i> GitHub'.html_safe, project.url, class: "btn" %></td>
+    <%if is_admin? %>
+    <td><%= link_to '<i class="icon-pencil"></i>   Edit  '.html_safe, project, method: :put, class: "btn" %></td>
+    <td><%= link_to '<i class="icon-trash"></i>    Delete'.html_safe, project, confirm: 'Are you sure?', method: :delete, class: "btn btn-danger" %></td>
+<%end%>
   </tr>
 <% end %>
 </table>
-
-<br />
-
-<%= link_to 'Download CSV', projects_path({:format => 'csv'}) %>
