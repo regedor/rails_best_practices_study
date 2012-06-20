@@ -9,7 +9,7 @@ gem 'sqlite3'
 gem 'hubruby'
 gem 'grit'
 
-gem 'rails_best_practices', :path => "/Users/regedor/Projects/Gorgeous Code/rails_best_practices"
+gem 'rails_best_practices-gorgeouscode'
 gem 'haml'
 
 gem 'delayed_job', "= 2.1.4"
