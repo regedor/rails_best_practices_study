@@ -18,7 +18,7 @@ end
 gem 'hubruby'
 gem 'grit'
 
-gem 'rails_best_practices-gorgeouscode'
+gem 'rails_best_practices-gorgeouscode', :require => "rails_best_practices"
 gem 'haml'
 
 gem 'delayed_job', "= 2.1.4"
