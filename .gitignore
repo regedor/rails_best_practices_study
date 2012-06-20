@@ -7,18 +7,18 @@
 capybara-*.html
 .rspec
 rerun.txt
-/site_files/.bundle
-/site_files/Gemfile.lock
-/site_files/log/*
-/site_files/tmp/*
-/site_files/db/*.sqlite3
-/site_files/db/schema.rb
-/site_files/vendor/bundle
-/site_files/public/spec.html
-/site_files/public/system/*
-/site_files/coverage/
-/site_files/spec/tmp/*
-/site_files/rails_best_practices_output.html
+/.bundle
+/Gemfile.lock
+/log/*
+/tmp/*
+/db/*.sqlite3
+/db/schema.rb
+/vendor/bundle
+/public/spec.html
+/public/system/*
+/coverage/
+/spec/tmp/*
+/rails_best_practices_output.html
 
 # Linux ignores
 .*
@@ -43,5 +43,7 @@ Icon?
 tmtags
 
 # Rails Best Practices Study
-/site_files/projects
+/projects
+
+
 /gh-pages
