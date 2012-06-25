@@ -4,16 +4,16 @@
 
 <div class="hero-unit">
   <div class="score-ribbon"><div class="ribbon"><div class="ribbon-stitches-top"></div>
-	<strong class="ribbon-content"><h1> Score <br><%= @project.nbp_report_to_hash['rbp_score'] %></h1></strong>
+	<strong class="ribbon-content"><h1> Score <br><%= @project.final_score %></h1></strong>
   <div class="ribbon-stitches-bottom"></div></div></div>
 
-  <h1><%= @project.name %></h1>
+  <h1 style="font-size: <%=70 - @project.name.length%>px;"><%= @project.name %></h1>
   <p><%= link_to @project.name, @project.url%> by <%= @project.owner %></p>
   <br>
 
   <p><%= desc.capitalize + (desc[-1] == "." ? "" : ".") if desc  %></p>
 
-  <p>This Project has <%= @project.watchers %> watchers and <%= @project.forks %> forks on GitHub.</p>
+  <p><%= humanized_description(@project) %></p>
 
 
   <p>
@@ -29,26 +29,24 @@
 
 
 
-<p>
-  <b>Watchers:</b>
-  <%= @project.watchers %>
-</p>
-
-<p>
-  <b>Forks:</b>
-  <%= @project.forks %>
-</p>
-
-
 <div class="page-header">
   <h1>NBP Report <small>occurrences of best practices infractions</small></h1>
 </div>
 
-<div id="nbp_report" class="boxed">
-  <% @project.nbp_report_headers_array.each_with_index do |header,i| -%>
-    <p>
-      <b><%= header %></b>
-      <%= @project.nbp_report_values_array[i] %>
-    </p>
-  <% end -%>
-</div>
+A total of <%= @project.nbp_report_to_mx_hash[:total_files_analyzed] %> were analyzed.
+<%= @project.nbp_report_to_mx_hash[:nbps] %>
+
+<table class="table table-striped table-bordered table-condensed">
+<tr>
+  <th>Best Practice Description</th>
+  <th>Errors found</th>
+  <th>NBP Score</th>
+</tr>
+<% 34.times do |i| ; m = @project.nbp_report_to_mx_hash[i+1] %>
+  <tr class="<%= 'red' if m[:r].to_i > 499%>">
+    <td><%= m[:l].gsub("_"," ").capitalize %></td>
+    <td><%= m[:o] %> errors ( <%= m[:n] %> files analyzed )</td>
+    <td><%= m[:r] %></td>
+  </tr>
+<% end %>
+</table>

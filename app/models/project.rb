@@ -19,13 +19,17 @@ class Project < ActiveRecord::Base
     super
   end
 
+  def final_score
+    self.score.to_i > 0 ? self.score : 0
+  end
+
 
   #
   # Run full analyse on project
   #
   def run!
-    self.update_github_information
-    self.update_best_practices_report if update_repo! #tenho de por a fazer cenas
+    #self.update_github_information
+    self.update_best_practices_report #if update_repo! #tenho de por a fazer cenas
     self.marked_for_run = false
     self.save!
   end
@@ -38,7 +42,7 @@ class Project < ActiveRecord::Base
     self.update_owner_and_name
     github = GitHub.repository(owner, name)
     self.watchers     =  github.watchers
-    self.forks        =  GitHub.forks(owner, name).size
+    self.forks        =  github.instance_variable_get(:@table)[:forks]
     self.watchers     =  github.watchers
     self.score        =  github.score
     self.size         =  github.size
@@ -134,6 +138,28 @@ class Project < ActiveRecord::Base
     headers.size.times { |i| hash[headers[i]] = values[i] }
     return(@nbp_report_to_hash ||= hash)
   end
+  
+  def nbp_report_to_mx_hash
+    headers = self.nbp_report_headers_array
+    values  = self.nbp_report_values_array
+    hash    = {}   
+    self.nbp_report_headers_array.each_with_index do |header, i|
+      if header =~ /^m(...)_([onr])_(.*)/
+        if $2 == "o"
+          hash[$1.to_i] = {o:values[i]}
+          hash[$1.to_i][:l] = $3
+          
+        else
+          hash[$1.to_i][$2.to_sym] = values[i]
+        end
+      else
+        hash[header.to_sym] = values[i]
+      end
+    end
+    @nbp_report_to_mx_hash ||= hash
+  end
+  
+  
 
 
 ##################################
@@ -157,7 +183,7 @@ class Project < ActiveRecord::Base
     
     #self.nbp_report = json_results
     self.nbp_report = results_csv
-    self.nbp_report = add_more_logic_to_nbp_report
+    #self.nbp_report = add_more_logic_to_nbp_report
     self.score      = self.nbp_report_to_hash["rbp_score"]
   end
 
@@ -172,8 +198,8 @@ class Project < ActiveRecord::Base
     total_files = 0 
     headers.each_with_index do |header,i|
       if header == "Number of files analyzed" 
-        new_headers << header.gsub(" ","_").downcase.underscore
-        new_headers << ("m#{metric+=1}_"+headers[i-1].gsub(" ","_").underscore)
+        new_headers << "m#{"%03d" % (metric+=1)}_n_" + header.gsub(" ","_").downcase.underscore
+        new_headers << "m#{"%03d" % metric}_r_"      + headers[i-1].gsub(" ","_").underscore
 
         new_values  << values[i]
         new_values  << ((values[i-1].to_i+0.000000001)/(values[i].to_i+0.0000001)*1000).to_i.to_s
@@ -210,7 +236,6 @@ class Project < ActiveRecord::Base
   def self.file_ignore files, pattern
     files.reject { |file| file.index(pattern) }
   end
- 
 
   #
   # output results in json format.
@@ -222,24 +247,59 @@ class Project < ActiveRecord::Base
     end.to_json
   end
 
-
   #
   # output results in csv format.
   #
+ # def results_csv 
+ #   require 'csv'
+ #   generic_headers = Project.attribute_names.sort - ["nbp_report"]
+ #   generic_results = (Project.attribute_names.sort - ["nbp_report"]).map { |attr| self.send(attr).to_s.gsub(",",";") }
+ #   CSV.generate do |csv|
+ #     csv << generic_headers + @runner.results.map { |result| [result[:checker_name], "Number of files analyzed"]}.flatten
+ #     csv << generic_results + @runner.results.map { |result| [result[:error_count], result[:files_checked] ]}.flatten
+ #   end
+ # end
+
   def results_csv 
+    headers     = nbp_report_headers_array
+    values      = nbp_report_values_array
+    new_values  = []
+    new_headers = []
+    metric      = 0
+    total_nbps  = 0
+    total_files = 0
+    
+    @runner.results.each do |result|
+      checker_name = result[:checker_name].gsub(" ","_").underscore
+      nbps         = ((result[:error_count].to_i+0.000000001)/(result[:files_checked].to_i+0.0000001)*1000).to_i
+      new_headers += [
+        "m#{"%03d" % (metric+=1)}_o_" + checker_name, 
+        "m#{"%03d" %  metric}_n_"     + checker_name, 
+        "m#{"%03d" %  metric}_r_"     + checker_name ]
+      new_values += [
+        result[:error_count], 
+        result[:files_checked],
+        nbps.to_s ]
+      total_files += result[:files_checked].to_i
+      total_nbps  += nbps
+    end
+    
+    new_headers << "total_files_analyzed"
+    new_values  << total_files  
+    new_headers << "nbps"
+    new_values  << total_nbps
+    new_headers << "rbp_score"
+    new_values  << (5-((total_nbps-200)*0.001)).round
+    
     require 'csv'
     CSV.generate do |csv|
-      csv << (Project.attribute_names.sort - ["nbp_report"] + @runner.results.map do
-        |result| [result[:checker_name], "Number of files analyzed"]
-      end.flatten)
-      csv << ((Project.attribute_names.sort - ["nbp_report"]).map { |attr| self.send(attr).to_s.gsub(",",";") } +
-        @runner.results.map { |result| [result[:error_count], result[:files_checked] ]}.flatten
-      )
+      csv << new_headers
+      csv << new_values
     end
   end
-
-
-
+   
+   
+   
 
 
 
