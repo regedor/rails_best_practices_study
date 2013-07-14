@@ -1,11 +1,12 @@
 class ProjectsController < ApplicationController
 
+
   # GET /projects
   # GET /projects.json
   def index
     respond_to do |format|
       format.html do
-        @project = Project.new
+        @project  = Project.new
         @projects = Project.select("id, name, forks, watchers, owner, url, score").order("score DESC")
       end
       format.json do
@@ -15,6 +16,7 @@ class ProjectsController < ApplicationController
       format.csv  { render text: Project.big_csv }
     end
   end
+
 
   # GET /projects/1
   # GET /projects/1.json
@@ -34,39 +36,23 @@ class ProjectsController < ApplicationController
     end
   end
 
+
   # POST /projects
   # POST /projects.json
   def create
+    @projects = Project.select("id, name, forks, watchers, owner, url, score").order("score DESC")
     respond_to do |format|
-      if params[:_projects][:urls] && Project.create_from_urls(params[:_projects][:urls].split(","))
-        format.html { redirect_to action: "index", notice: 'Project was successfully created.' }
+      params[:_projects][:urls] && ( @project = Project.create({:url => params[:_projects][:urls].split(",").first}) )
+      unless @project.errors
+        format.html { render action: "index", notice: 'Project was successfully created.' }
         format.json { render json: @project, status: :created, location: @project }
       else
-        format.html { render action: "index" }
+        format.html { render action: "index", error: 'Invalid URL.' }
         format.json { render json: @project.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  def edit
-    @project = Project.find(params[:id])
-  end
-
-  # PUT /projects/1
-  # PUT /projects/1.json
-  def update
-    @project = Project.find(params[:id])
-
-    respond_to do |format|
-      if @project.update_attributes(params[:project])
-        format.html { redirect_to @project, notice: 'Project was successfully updated.' }
-        format.json { head :ok }
-      else
-        format.html { render action: "index" }
-        format.json { render json: @project.errors, status: :unprocessable_entity }
-      end
-    end
-  end
 
   # DELETE /projects/1
   # DELETE /projects/1.json

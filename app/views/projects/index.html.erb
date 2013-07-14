@@ -1,12 +1,17 @@
-<%if is_admin? %>
-  <h2>Add Projects</h2>
-  
-  <%= semantic_form_for "_projects", url: '/projects' do |f| %>
-    <%= f.inputs do %>
-      <%= f.input :urls %>
-    <% end -%>
+  <% if @project && @project.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@project.errors.count, "error") %> prohibited this project from being saved:</h2>
+
+      <ul>
+      <% @project.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% elsif @project.id %>  
+    <p class='notice'>Project added. In few hours report should be listed bellow.</p>
   <% end -%>
-<%end%>
+
 
 <h2>Analyzed Rails Projects</h2>
 
@@ -41,3 +46,11 @@
   </tr>
 <% end %>
 </table>
+
+<h2>Add Projects</h2>
+
+<%= semantic_form_for "_projects", url: '/projects' do |f| %>
+  <%= f.inputs do %>
+    <%= f.input :urls %>
+  <% end -%>
+<% end -%>

@@ -1,0 +1,6 @@
+rvm use ruby-1.9.2-p318
+gem install heroku --no-ri --no-rdoc
+gem install taps --no-ri --no-rdoc
+gem install sqlite3 --no-ri --no-rdoc
+heroku db:push
+sh .rvmrc

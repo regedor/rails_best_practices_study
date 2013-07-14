@@ -2,7 +2,7 @@ require 'fileutils'
 
 class Project < ActiveRecord::Base
 
-  validates :url, uniqueness: true
+  validates :url, uniqueness: true, format: {  :with => /https:\/\/github.com\/.*/  } 
 
   after_save { self.delay.run! if self.marked_for_run }
 
@@ -119,7 +119,11 @@ class Project < ActiveRecord::Base
   # #FIXME needs a lot of validations
   #
   def self.create_from_urls(urls)
-    urls.each { |url| self.create :url => url }
+    begin
+      urls.each { |url| self.create!({:url => url}) }
+    rescue
+      return false
+    end
     return true
   end
 
