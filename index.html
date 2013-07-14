@@ -10,15 +10,17 @@ layout: default
 </div>
 
 <h1><a href="https://github.com/regedor/rails_best_practices_study">Rails Best Practices Study</a>
-  <span class="small">by <a href="https://github.com/regedor">Miguel Regedor</a></span></h1>
+  <span class="small">by <a href="https://www.miguelregedor.com">Miguel Regedor</a></span></h1>
 <div class="description">by following best practices, a project's maintainability is increased.</div>
 
 <p>It seems an obvious assumption, although it requires formal proof.</p>
 <p>The objective of this project is to find a correlation between a project's quality and its usage of best practices.</p>
+
 <p>
-  This study is the support for my <a href="https://github.com/regedor/Master-Thesis">Master's thesis</a>.
-  The <span style="color:red">on development</span> PDF version of it can be downloaded 
-  <a href="https://github.com/regedor/Master-Thesis/raw/master/Thesis/thesis.pdf">here</a>.
+  Rails Best Practices Study is a tool 
+  (<a href="http://app.study.gorgeouscode.com/">demo</a>) 
+  serving of support for my 
+  <a href="/2013/03/master-thesis/">Master's thesis</a>.
 </p>
     
 <h2>Writings</h2>
@@ -32,15 +34,26 @@ layout: default
 </ul>
 
 
-<h2>About this project source code</h2>
+<h2>About the tool</h2>
 <div id="about-soucecode">
   <p>
-	Well, the code is open source.
-	This simple Ruby on Rails application presents a single page where you can enter one or more links to github projects (Rails applications). 
-	The links are stored in the database and in parallel, a daemon should be running (delayed job). 
+	The tool is open source and the source code hosted on github.
+	It consists of a Ruby on Rails application with two main parts:
+  </p><p>
+	The first part is a web interface where you can enter one or more links to github projects (Rails applications). 
+	The links are stored in the database for later processing. 
+	After concluded the assessment of a project, the report and best practices score is presented in this same web interface.
+  </p><p>	
+	The second part is the a daemon that should be running in paralel (delayed job). 
 	The purpose of this process is to check for new links on the database, 
 	use them to clone the projects repositories, retrieve github details, 
-	run <span class="code">ruby_best_practices</span> gem upon them and store everything in the database.
+	run the analyses based on the <span class="code">ruby_best_practices</span> gem upon them and store the report in the database.
+  </p><p>
+    Anyone is free to download this project and use without any limitations.
+    A online instance of the tool (demo) is also available 
+    <a href="http://app.study.gorgeouscode.com/">here</a>.
+    However at this moment, the daemon is only running once a week 
+    (this happens to avoid <a href="https://www.heroku.com/">heroku</a> hosting costs).	
   </p>
 
   <h3>Dependencies</h2>
@@ -84,6 +97,7 @@ layout: default
     by running:
     <pre>$ git clone git://github.com/regedor/rails_best_practices_study</pre>
   </p>
+  <p>The process of running the application locally, is the same as for any common rails application.</p>
 </div>
 
 <h2>Author</h2>
